@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma UNESP 2025 - Controle de Estudos</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 
+                0 32px 64px rgba(0,0,0,0.15),
+                0 0 0 1px rgba(255,255,255,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b95 50%, #c44569 100%);
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 800;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header p {
+            margin: 15px 0 0 0;
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
+            box-shadow: 0 8px 32px rgba(86, 171, 47, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 8px 32px rgba(255, 65, 108, 0.3);
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        input, select {
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        input:hover, select:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+            min-width: 1200px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 18px 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th:first-child {
+            border-top-left-radius: 16px;
+        }
+        
+        th:last-child {
+            border-top-right-radius: 16px;
+            border-right: none;
+        }
+        
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.08);
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(102, 126, 234, 0.02);
+        }
+        
+        tr:hover {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: scale(1.01);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+        }
+        
+        .disciplina-matematica { 
+            border-left: 4px solid #FF6B6B; 
+            background: linear-gradient(90deg, rgba(255, 107, 107, 0.05), transparent);
+        }
+        .disciplina-portugues { 
+            border-left: 4px solid #4ECDC4; 
+            background: linear-gradient(90deg, rgba(78, 205, 196, 0.05), transparent);
+        }
+        .disciplina-historia { 
+            border-left: 4px solid #45B7D1; 
+            background: linear-gradient(90deg, rgba(69, 183, 209, 0.05), transparent);
+        }
+        .disciplina-geografia { 
+            border-left: 4px solid #96CEB4; 
+            background: linear-gradient(90deg, rgba(150, 206, 180, 0.05), transparent);
+        }
+        .disciplina-biologia { 
+            border-left: 4px solid #FECA57; 
+            background: linear-gradient(90deg, rgba(254, 202, 87, 0.05), transparent);
+        }
+        .disciplina-fisica { 
+            border-left: 4px solid #FF9FF3; 
+            background: linear-gradient(90deg, rgba(255, 159, 243, 0.05), transparent);
+        }
+        .disciplina-quimica { 
+            border-left: 4px solid #54A0FF; 
+            background: linear-gradient(90deg, rgba(84, 160, 255, 0.05), transparent);
+        }
+        .disciplina-filosofia { 
+            border-left: 4px solid #5F27CD; 
+            background: linear-gradient(90deg, rgba(95, 39, 205, 0.05), transparent);
+        }
+        
+        .status-cell {
+            padding: 4px;
+        }
+        
+        .status-checkbox {
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: #667eea;
+            transition: transform 0.2s;
+        }
+        
+        .status-checkbox:hover {
+            transform: scale(1.4);
+        }
+        
+        .porcentagem {
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .porcentagem.alta { 
+            background: linear-gradient(135deg, #27ae60, #2ecc71); 
+        }
+        .porcentagem.media { 
+            background: linear-gradient(135deg, #f39c12, #e67e22); 
+        }
+        .porcentagem.baixa { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b); 
+        }
+        
+        .input-small {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        .input-date {
+            width: 110px;
+        }
+        
+        .input-content {
+            width: 150px;
+        }
+        
+        .input-simulado {
+            width: 60px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(20px);
+            color: #667eea;
+            padding: 28px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 
+                0 20px 40px rgba(102, 126, 234, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #ff9a56);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 32px 64px rgba(102, 126, 234, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card span:last-child {
+            font-weight: 600;
+            font-size: 0.95em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 
+                0 32px 64px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: modalAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 CRONOGRAMA UNESP 2025</h1>
+            <p>04/08 → 02/11 | 12 semanas | Controle Completo de Estudos</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <span class="stat-value" id="totalConteudos">0</span>
+                <span>Total de Conteúdos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="conteudosFinalizados">0</span>
+                <span>Finalizados</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="mediaAcertos">0%</span>
+                <span>Média de Acertos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="simuladosRealizados">0</span>
+                <span>Simulados Realizados</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-success" onclick="adicionarConteudo()">
+                ➕ Adicionar Conteúdo
+            </button>
+            <button class="btn" onclick="exportarCSV()">
+                📊 Exportar CSV
+            </button>
+            <button class="btn" onclick="importarCSV()">
+                📁 Importar CSV
+            </button>
+            <button class="btn btn-danger" onclick="limparDados()">
+                🗑️ Limpar Dados
+            </button>
+        </div>
+        
+        <div class="search-filter">
+            <input type="text" id="filtroConteudo" placeholder="Filtrar por conteúdo..." onkeyup="filtrarTabela()">
+            <select id="filtroDisciplina" onchange="filtrarTabela()">
+                <option value="">Todas as Disciplinas</option>
+                <option value="Matemática">📐 Matemática</option>
+                <option value="Português">📝 Português</option>
+                <option value="História">🏛️ História</option>
+                <option value="Geografia">🌍 Geografia</option>
+                <option value="Biologia">🧬 Biologia</option>
+                <option value="Física">⚡ Física</option>
+                <option value="Química">🧪 Química</option>
+                <option value="Filosofia">🤔 Filosofia</option>
+            </select>
+            <select id="filtroStatus" onchange="filtrarTabela()">
+                <option value="">Todos os Status</option>
+                <option value="nao-iniciado">Não Iniciado</option>
+                <option value="em-andamento">Em Andamento</option>
+                <option value="finalizado">Finalizado</option>
+            </select>
+        </div>
+        
+        <div class="table-container">
+            <table id="tabelaEstudos">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Disciplina</th>
+                        <th style="width: 150px;">Conteúdo</th>
+                        <th style="width: 110px;">Data Início</th>
+                        <th style="width: 110px;">Data Fim</th>
+                        <th style="width: 80px;">Vídeo Aula</th>
+                        <th style="width: 80px;">Exercícios</th>
+                        <th style="width: 60px;">Qtd Ex.</th>
+                        <th style="width: 60px;">Acertos</th>
+                        <th style="width: 60px;">Erros</th>
+                        <th style="width: 80px;">% Acerto</th>
+                        <th style="width: 80px;">Simulado</th>
+                        <th style="width: 80px;">Nota Sim.</th>
+                        <th style="width: 80px;">Flashcards</th>
+                        <th style="width: 80px;">Revisão</th>
+                        <th style="width: 60px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar/editar conteúdo -->
+    <div id="modalConteudo" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="tituloModal">Adicionar Conteúdo</h2>
+            <form id="formConteudo" onsubmit="salvarConteudo(event)">
+                <div class="form-group">
+                    <label for="inputDisciplina">Disciplina:</label>
+                    <select id="inputDisciplina" required>
+                        <option value="">Selecione...</option>
+                        <option value="Matemática">📐 Matemática</option>
+                        <option value="Português">📝 Português</option>
+                        <option value="História">🏛️ História</option>
+                        <option value="Geografia">🌍 Geografia</option>
+                        <option value="Biologia">🧬 Biologia</option>
+                        <option value="Física">⚡ Física</option>
+                        <option value="Química">🧪 Química</option>
+                        <option value="Filosofia">🤔 Filosofia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputConteudo">Conteúdo:</label>
+                    <input type="text" id="inputConteudo" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputDataInicio">Data de Início:</label>
+                    <input type="date" id="inputDataInicio">
+                </div>
+                <div class="form-group">
+                    <label for="inputDataFim">Data de Fim:</label>
+                    <input type="date" id="inputDataFim">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 20px;">
+                    Salvar Conteúdo
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let dadosEstudo = [];
+        let editandoIndice = -1;
+
+        // Carregar dados do localStorage ao iniciar
+        window.onload = function() {
+            carregarDados();
+            atualizarTabela();
+            atualizarEstatisticas();
+        }
+
+        function carregarDados() {
+            const dados = localStorage.getItem('cronogramaUNESP');
+            if (dados) {
+                dadosEstudo = JSON.parse(dados);
+            } else {
+                // Dados iniciais baseados no template
+                dadosEstudo = [
+                    {
+                        disciplina: "Matemática",
+                        conteudo: "Probabilidade",
+                        dataInicio: "",
+                        dataFim: "",
+                        videoAula: false,
+                        exercicios: false,
+                        qtdExercicios: 0,
+                        acertos: 0,
+                        erros: 0,
+                        simulado: false,
+                        notaSimulado: 0,
+                        flashcards: false,
+                        revisao: false
+                    },
+                    {
+                        disciplina: "Matemática",
+                        conteudo: "Relação e Função",
+                        dataInicio: "",
+                        dataFim: "",
+                        videoAula: false,
+                        exercicios: false,
+                        qtdExercicios: 0,
+                        acertos: 0,
+                        erros: 0,
+                        simulado: false,
+                        notaSimulado: 0,
+                        flashcards: false,
+                        revisao: false
+                    },
+                    {
+                        disciplina: "Português",
+                        conteudo: "Orações Subordinadas",
+                        dataInicio: "",
+                        dataFim: "",
+                        videoAula: false,
+                        exercicios: false,
+                        qtdExercicios: 0,
+                        acertos: 0,
+                        erros: 0,
+                        simulado: false,
+                        notaSimulado: 0,
+                        flashcards: false,
+                        revisao: false
+                    },
+                    {
+                        disciplina: "Português",
+                        conteudo: "Interpretação de Textos",
+                        dataInicio: "",
+                        dataFim: "",
+                        videoAula: false,
+                        exercicios: false,
+                        qtdExercicios: 0,
+                        acertos: 0,
+                        erros: 0,
+                        simulado: false,
+                        notaSimulado: 0,
+                        flashcards: false,
+                        revisao: false
+                    }
+                ];
+            }
+        }
+
+        function salvarDados() {
+            localStorage.setItem('cronogramaUNESP', JSON.stringify(dadosEstudo));
+        }
+
+        function adicionarConteudo() {
+            editandoIndice = -1;
+            document.getElementById('tituloModal').textContent = 'Adicionar Conteúdo';
+            document.getElementById('formConteudo').reset();
+            document.getElementById('modalConteudo').style.display = 'block';
+        }
+
+        function editarConteudo(indice) {
+            editandoIndice = indice;
+            const item = dadosEstudo[indice];
+            document.getElementById('tituloModal').textContent = 'Editar Conteúdo';
+            document.getElementById('inputDisciplina').value = item.disciplina;
+            document.getElementById('inputConteudo').value = item.conteudo;
+            document.getElementById('inputDataInicio').value = item.dataInicio;
+            document.getElementById('inputDataFim').value = item.dataFim;
+            document.getElementById('modalConteudo').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalConteudo').style.display = 'none';
+        }
+
+        function salvarConteudo(event) {
+            event.preventDefault();
+            
+            const conteudo = {
+                disciplina: document.getElementById('inputDisciplina').value,
+                conteudo: document.getElementById('inputConteudo').value,
+                dataInicio: document.getElementById('inputDataInicio').value,
+                dataFim: document.getElementById('inputDataFim').value,
+                videoAula: false,
+                exercicios: false,
+                qtdExercicios: 0,
+                acertos: 0
